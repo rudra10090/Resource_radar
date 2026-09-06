@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% set active_page = "login" %}
+
+{% block title %}Login &amp; Sign Up — ResourceRadar{% endblock %}
+
+{% block content %}
+<div class="auth-page-wrapper">
+  <div class="container auth-container">
+    <div class="auth-card" id="auth-card">
+
+      <!-- Top of Card: Small Logo -->
+      <div class="auth-brand">
+        <svg class="auth-brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6"></path>
+        </svg>
+        <span class="auth-brand-name">ResourceRadar</span>
+      </div>
+
+      <!-- Tab Toggle: Two pill-shaped tabs -->
+      <div class="auth-tabs" role="tablist" aria-label="Authentication tabs">
+        <button type="button" class="auth-tab {% if active_tab == 'signup' %}active{% endif %}" id="tab-btn-signup" role="tab" aria-selected="{% if active_tab == 'signup' %}true{% else %}false{% endif %}" aria-controls="auth-pane-signup" data-tab="signup">
+          Sign Up
+        </button>
+        <button type="button" class="auth-tab {% if active_tab == 'login' %}active{% endif %}" id="tab-btn-login" role="tab" aria-selected="{% if active_tab == 'login' %}true{% else %}false{% endif %}" aria-controls="auth-pane-login" data-tab="login">
+          Log In
+        </button>
+      </div>
+
+      <!-- Sign Up Form -->
+      <form action="{{ url_for('login') }}" method="POST" class="auth-form" id="auth-pane-signup" role="tabpanel" aria-labelledby="tab-btn-signup" novalidate {% if active_tab != 'signup' %}style="display: none;"{% endif %}>
+        <input type="hidden" name="action" value="signup">
+
+        <!-- 1. Full Name -->
+        <div class="auth-form-group {% if signup_errors.get('full_name') %}has-error{% endif %}">
+          <label for="signup-fullname" class="auth-label">Full Name</label>
+          <input type="text" id="signup-fullname" name="full_name" class="auth-input" placeholder="e.g. Aman Sharma" value="{{ signup_data.get('full_name', '') }}" required>
+          {% if signup_errors.get('full_name') %}
+          <span class="auth-error" id="error-signup-fullname">{{ signup_errors.get('full_name') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- 2. Institute Name -->
+        <div class="auth-form-group {% if signup_errors.get('institute_name') %}has-error{% endif %}">
+          <label for="signup-institute" class="auth-label">Institute Name</label>
+          <input type="text" id="signup-institute" name="institute_name" class="auth-input" placeholder="Lovely Professional University" value="{{ signup_data.get('institute_name', '') }}" required>
+          {% if signup_errors.get('institute_name') %}
+          <span class="auth-error" id="error-signup-institute">{{ signup_errors.get('institute_name') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- 3. Username -->
+        <div class="auth-form-group {% if signup_errors.get('username') %}has-error{% endif %}">
+          <label for="signup-username" class="auth-label">Username</label>
+          <input type="text" id="signup-username" name="username" class="auth-input" placeholder="e.g. aman.s" value="{{ signup_data.get('username', '') }}" autocomplete="username" required>
+          {% if signup_errors.get('username') %}
+          <span class="auth-error" id="error-signup-username">{{ signup_errors.get('username') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- 4. Password -->
+        <div class="auth-form-group {% if signup_errors.get('password') %}has-error{% endif %}">
+          <label for="signup-password" class="auth-label">Password</label>
+          <input type="password" id="signup-password" name="password" class="auth-input" autocomplete="new-password" required>
+          {% if signup_errors.get('password') %}
+          <span class="auth-error" id="error-signup-password">{{ signup_errors.get('password') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- 5. Confirm Password -->
+        <div class="auth-form-group {% if signup_errors.get('confirm_password') %}has-error{% endif %}">
+          <label for="signup-confirm-password" class="auth-label">Confirm Password</label>
+          <input type="password" id="signup-confirm-password" name="confirm_password" class="auth-input" autocomplete="new-password" required>
+          {% if signup_errors.get('confirm_password') %}
+          <span class="auth-error" id="error-signup-confirmpassword">{{ signup_errors.get('confirm_password') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="auth-btn-submit" id="btn-signup-submit">Create Account</button>
+      </form>
+
+      <!-- Log In Form -->
+      <form action="{{ url_for('login') }}" method="POST" class="auth-form" id="auth-pane-login" role="tabpanel" aria-labelledby="tab-btn-login" novalidate {% if active_tab != 'login' %}style="display: none;"{% endif %}>
+        <input type="hidden" name="action" value="login">
+
+        <!-- 1. Username -->
+        <div class="auth-form-group {% if login_errors.get('username') %}has-error{% endif %}">
+          <label for="login-username" class="auth-label">Username</label>
+          <input type="text" id="login-username" name="username" class="auth-input" placeholder="e.g. aman.s" value="{{ login_data.get('username', '') }}" autocomplete="username" required>
+          {% if login_errors.get('username') %}
+          <span class="auth-error" id="error-login-username">{{ login_errors.get('username') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- 2. Password -->
+        <div class="auth-form-group {% if login_errors.get('password') %}has-error{% endif %}">
+          <label for="login-password" class="auth-label">Password</label>
+          <input type="password" id="login-password" name="password" class="auth-input" autocomplete="current-password" required>
+          {% if login_errors.get('password') %}
+          <span class="auth-error" id="error-login-password">{{ login_errors.get('password') }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="auth-btn-submit" id="btn-login-submit">Log In</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabSignUp = document.getElementById('tab-btn-signup');
+    const tabLogIn = document.getElementById('tab-btn-login');
+    const paneSignUp = document.getElementById('auth-pane-signup');
+    const paneLogIn = document.getElementById('auth-pane-login');
+
+    if (!tabSignUp || !tabLogIn || !paneSignUp || !paneLogIn) return;
+
+    function switchTab(target) {
+      if (target === 'signup') {
+        tabSignUp.classList.add('active');
+        tabSignUp.setAttribute('aria-selected', 'true');
+        tabLogIn.classList.remove('active');
+        tabLogIn.setAttribute('aria-selected', 'false');
+
+        paneSignUp.style.display = 'flex';
+        paneLogIn.style.display = 'none';
+      } else {
+        tabLogIn.classList.add('active');
+        tabLogIn.setAttribute('aria-selected', 'true');
+        tabSignUp.classList.remove('active');
+        tabSignUp.setAttribute('aria-selected', 'false');
+
+        paneLogIn.style.display = 'flex';
+        paneSignUp.style.display = 'none';
+      }
+    }
+
+    tabSignUp.addEventListener('click', function() {
+      switchTab('signup');
+    });
+
+    tabLogIn.addEventListener('click', function() {
+      switchTab('login');
+    });
+  });
+</script>
+{% endblock %}

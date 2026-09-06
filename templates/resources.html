@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+
+{% set active_page = "resources" %}
+
+{% block title %}Resources — ResourceRadar{% endblock %}
+
+{% block content %}
+<div class="resources-page-wrapper">
+  <div class="container">
+
+    <!-- Header Section -->
+    <header class="resources-header scroll-fade is-visible">
+      <span class="section-tag">Audit guides &amp; best practices</span>
+      <h1 class="resources-main-title">Resources</h1>
+      <p class="resources-subtext">Practical tips to reduce resource wastage in your shared space.</p>
+    </header>
+
+    <!-- Tab System -->
+    <div class="resources-tabs-wrapper scroll-fade is-visible">
+      <div class="resources-tabs" role="tablist" aria-label="Resource category tabs">
+        <button type="button" class="tab-pill active" id="tab-btn-energy" role="tab" aria-selected="true" aria-controls="tab-pane-energy" data-category="energy">
+          <span class="tab-emoji">⚡</span>
+          <span>Energy</span>
+        </button>
+        <button type="button" class="tab-pill" id="tab-btn-water" role="tab" aria-selected="false" aria-controls="tab-pane-water" data-category="water">
+          <span class="tab-emoji">💧</span>
+          <span>Water</span>
+        </button>
+        <button type="button" class="tab-pill" id="tab-btn-waste" role="tab" aria-selected="false" aria-controls="tab-pane-waste" data-category="waste">
+          <span class="tab-emoji">🗑️</span>
+          <span>Waste</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- "Did You Know?" Highlight Card -->
+    <section class="did-you-know-card scroll-fade is-visible" aria-live="polite" id="did-you-know-card">
+      <div class="did-you-know-label">
+        <span>💡 Did You Know?</span>
+      </div>
+      <p class="did-you-know-text" id="did-you-know-text">
+        Set AC to 24°C or above — every degree lower increases energy consumption by 6%.
+      </p>
+    </section>
+
+    <!-- Tips Container -->
+    <div class="resources-content-wrapper">
+
+      <!-- ================= Energy Tips Grid ================= -->
+      <section class="tips-grid-pane is-active" id="tab-pane-energy" role="tabpanel" aria-labelledby="tab-btn-energy">
+        <div class="tips-grid">
+          
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">💡</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Turn Off Lights</h2>
+              <p class="tip-desc">Turn off lights when leaving a room — even for 5 minutes saves electricity.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🌀</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Fans Over AC</h2>
+              <p class="tip-desc">Use fans instead of AC whenever possible — fans use 10x less energy.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🔌</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Unplug Chargers</h2>
+              <p class="tip-desc">Chargers consume phantom power even when idle. Unplug when not in use.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">☀️</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Use Natural Light</h2>
+              <p class="tip-desc">Open curtains during the day instead of switching on lights.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🌡️</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Set AC to 24°C</h2>
+              <p class="tip-desc">Every degree below 24°C increases energy use by 6% — set it wisely.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🔧</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Report Broken Switches</h2>
+              <p class="tip-desc">Broken switches waste energy constantly — report them immediately.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">💡</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Use LED Bulbs</h2>
+              <p class="tip-desc">LED bulbs use 75% less energy than regular bulbs — switch where possible.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🌙</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Switch Off Common Area Lights</h2>
+              <p class="tip-desc">Switch off corridor and staircase lights during daytime.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🔋</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Power Strips</h2>
+              <p class="tip-desc">Use power strips with switches to cut off multiple devices at once.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-energy">
+            <div class="tip-icon-box icon-box-energy" aria-hidden="true">🏢</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Report Empty Room AC</h2>
+              <p class="tip-desc">Report AC units running in empty rooms or common areas.</p>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ================= Water Tips Grid ================= -->
+      <section class="tips-grid-pane" id="tab-pane-water" role="tabpanel" aria-labelledby="tab-btn-water" style="display: none;">
+        <div class="tips-grid">
+          
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🚿</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Shorter Showers</h2>
+              <p class="tip-desc">Every minute saved in the shower = 8-10 litres of water saved.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🔧</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Report Leaking Taps</h2>
+              <p class="tip-desc">A dripping tap wastes up to 20,000 litres per year — report it immediately.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🪣</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Use Buckets</h2>
+              <p class="tip-desc">Use buckets instead of running taps when washing clothes by hand.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🚰</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Turn Off Taps</h2>
+              <p class="tip-desc">Turn off taps while brushing teeth — saves up to 6 litres per minute.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🏠</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Report Overflow</h2>
+              <p class="tip-desc">Overflowing water tanks on rooftops waste hundreds of litres daily.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🌿</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Water Plants Smart</h2>
+              <p class="tip-desc">Water plants in the evening to reduce evaporation loss.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🔍</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Report Seepage</h2>
+              <p class="tip-desc">Wet patches on walls or floors indicate hidden leaks — report them.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">🚿</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Avoid Running Taps</h2>
+              <p class="tip-desc">Avoid leaving taps running while washing utensils in shared kitchens.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">💧</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Use Only What You Need</h2>
+              <p class="tip-desc">Fill buckets or containers with only as much water as needed.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-water">
+            <div class="tip-icon-box icon-box-water" aria-hidden="true">📢</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Encourage Awareness</h2>
+              <p class="tip-desc">Remind hostel floor-mates to be mindful of water use during peak hours.</p>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ================= Waste Tips Grid ================= -->
+      <section class="tips-grid-pane" id="tab-pane-waste" role="tabpanel" aria-labelledby="tab-btn-waste" style="display: none;">
+        <div class="tips-grid">
+          
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">🗂️</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Separate Waste</h2>
+              <p class="tip-desc">Separate wet waste (food) and dry waste (paper, plastic) in your room.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">♻️</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Recycle</h2>
+              <p class="tip-desc">Use designated recycling bins for paper, plastic, and metal waste.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">🧴</div>
+            <div class="tip-content">
+              <h2 class="tip-title">No Single-Use Plastic</h2>
+              <p class="tip-desc">Carry a reusable water bottle and bags to avoid single-use plastic.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">🍱</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Reduce Food Waste</h2>
+              <p class="tip-desc">Order only what you'll finish — food waste in canteens is a major issue.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">📱</div>
+            <div class="tip-content">
+              <h2 class="tip-title">E-Waste Disposal</h2>
+              <p class="tip-desc">Dispose of old chargers and batteries at designated e-waste collection points.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">📄</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Save Paper</h2>
+              <p class="tip-desc">Use both sides of paper and avoid printing unless absolutely necessary.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">👕</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Donate Old Items</h2>
+              <p class="tip-desc">Donate old clothes, books, and stationery instead of throwing them away.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">🌱</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Compost</h2>
+              <p class="tip-desc">Compost fruit and vegetable waste if your campus has a compost facility.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">📢</div>
+            <div class="tip-content">
+              <h2 class="tip-title">Report Overflowing Bins</h2>
+              <p class="tip-desc">Report overflowing dustbins in common areas so they get cleared promptly.</p>
+            </div>
+          </article>
+
+          <article class="tip-card tip-waste">
+            <div class="tip-icon-box icon-box-waste" aria-hidden="true">🚫</div>
+            <div class="tip-content">
+              <h2 class="tip-title">No Burning Waste</h2>
+              <p class="tip-desc">Avoid burning waste — it is harmful and often illegal in residential areas.</p>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+/**
+ * Tab switching & dynamic "Did You Know?" updates
+ */
+(function() {
+  const tabs = document.querySelectorAll('.resources-tabs .tab-pill');
+  const panes = {
+    energy: document.getElementById('tab-pane-energy'),
+    water: document.getElementById('tab-pane-water'),
+    waste: document.getElementById('tab-pane-waste')
+  };
+  const didYouKnowText = document.getElementById('did-you-know-text');
+
+  const facts = {
+    energy: "Set AC to 24°C or above — every degree lower increases energy consumption by 6%.",
+    water: "A single dripping tap can waste up to 20,000 litres of water per year — enough to fill a small swimming pool.",
+    waste: "The average hostel generates 0.5 kg of waste per person per day — most of it is recyclable."
+  };
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const category = tab.getAttribute('data-category');
+      if (!category || !panes[category]) return;
+
+      // Update active tab button state
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      // Update visible pane
+      Object.keys(panes).forEach(cat => {
+        if (cat === category) {
+          panes[cat].style.display = 'block';
+          panes[cat].classList.add('is-active');
+        } else {
+          panes[cat].style.display = 'none';
+          panes[cat].classList.remove('is-active');
+        }
+      });
+
+      // Update Did You Know text with smooth transition
+      if (didYouKnowText && facts[category]) {
+        didYouKnowText.style.opacity = '0';
+        setTimeout(() => {
+          didYouKnowText.textContent = facts[category];
+          didYouKnowText.style.opacity = '1';
+        }, 150);
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}

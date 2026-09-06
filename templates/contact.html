@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% set active_page = "contact" %}
+
+{% block title %}Contact — ResourceRadar{% endblock %}
+
+{% block content %}
+<div class="contact-page-wrapper">
+
+  <!-- Section 1: Credits -->
+  <section class="contact-hero-section scroll-fade" id="about-project" aria-label="About this project">
+    <div class="container contact-hero-wrapper">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>Project credits</span>
+      </div>
+
+      <h1 class="contact-hero-title">About This Project</h1>
+
+      <p class="contact-hero-lead">
+        ResourceRadar was built to address resource inefficiencies in shared institutional and community spaces — helping people report, track, and reduce wastage of energy, water, and waste.
+      </p>
+
+      <div class="credits-info-grid">
+        <!-- Hackathon Info Card -->
+        <div class="credits-info-card" id="credit-hackathon">
+          <div class="credits-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+              <path d="M4 22h16"></path>
+              <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
+              <path d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2Z"></path>
+            </svg>
+          </div>
+          <span class="credits-info-text">Built for CodeFlux Hackathon 2026</span>
+        </div>
+
+        <!-- Team Info Card -->
+        <div class="credits-info-card" id="credit-team">
+          <div class="credits-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <span class="credits-info-text">Team: Ternary Qubits</span>
+        </div>
+
+        <!-- Institute Info Card -->
+        <div class="credits-info-card" id="credit-institute">
+          <div class="credits-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
+              <path d="M9 22v-4h6v4"></path>
+              <path d="M8 6h.01"></path>
+              <path d="M16 6h.01"></path>
+              <path d="M12 6h.01"></path>
+              <path d="M12 10h.01"></path>
+              <path d="M12 14h.01"></path>
+              <path d="M16 10h.01"></path>
+              <path d="M16 14h.01"></path>
+              <path d="M8 10h.01"></path>
+              <path d="M8 14h.01"></path>
+            </svg>
+          </div>
+          <span class="credits-info-text">Institute: Lovely Professional University, Punjab</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Reach Out -->
+  <section class="contact-reach-section scroll-fade" id="get-in-touch" aria-label="Get in touch">
+    <div class="container contact-reach-wrapper">
+      <div class="contact-reach-header">
+        <span class="section-tag">Reach out</span>
+        <h2 class="contact-reach-title">Get In Touch</h2>
+        <p class="contact-reach-subtext">Have a question or suggestion? Reach out to us.</p>
+      </div>
+
+      <div class="contact-cards-list">
+        <!-- Email Row Card (Clickable mailto:) -->
+        <a href="mailto:resourceradar@gmail.com" class="contact-row-card contact-clickable-card" id="contact-email" aria-label="Send email to resourceradar@gmail.com">
+          <div class="contact-card-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+          </div>
+          <div class="contact-card-details">
+            <span class="contact-detail-label">Email</span>
+            <span class="contact-detail-value">resourceradar@gmail.com</span>
+          </div>
+          <div class="contact-card-arrow" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Instagram Row Card (Clickable placeholder #) -->
+        <a href="#" class="contact-row-card contact-clickable-card" id="contact-instagram" aria-label="View Instagram profile @resourceradar">
+          <div class="contact-card-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+            </svg>
+          </div>
+          <div class="contact-card-details">
+            <span class="contact-detail-label">Instagram</span>
+            <span class="contact-detail-value">@resourceradar</span>
+          </div>
+          <div class="contact-card-arrow" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Location Row Card (Static info) -->
+        <div class="contact-row-card" id="contact-location">
+          <div class="contact-card-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="contact-card-details">
+            <span class="contact-detail-label">Location</span>
+            <span class="contact-detail-value">Lovely Professional University, Punjab, India</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

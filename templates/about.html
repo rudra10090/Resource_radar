@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% set active_page = "about" %}
+
+{% block title %}About — ResourceRadar{% endblock %}
+
+{% block content %}
+  <!-- Section 1: Mission Section -->
+  <section class="about-hero-section scroll-fade" id="mission">
+    <div class="container about-hero-wrapper">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>Our mission</span>
+      </div>
+
+      <h1 class="about-hero-title">Why we built this</h1>
+
+      <p class="about-hero-lead">
+        Shared spaces like hostels, campuses, offices, and apartment societies waste large amounts of energy, water, and generate excess waste — because no single person feels personally accountable the way they would in their own home. When resource consumption is decentralized and utility costs are absorbed collectively, everyday waste goes unnoticed. ResourceRadar exists to give these spaces transparent visibility and a simple, frictionless way to report and track inefficiencies.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 2: The Problem Section -->
+  <section class="problem-section scroll-fade" id="the-problem" aria-label="The problem with shared spaces">
+    <div class="container">
+      <div class="problem-intro">
+        <span class="section-tag">The challenge</span>
+        <h2 class="section-title">The problem with shared spaces</h2>
+        <p class="section-description">
+          In communal environments, individual accountability is inherently low when resources are shared and bills aren't personal. Without direct feedback loops or designated ownership, minor leaks and unattended utilities become normalized habits.
+        </p>
+      </div>
+
+      <div class="problem-grid">
+        <!-- Energy Problem Card -->
+        <div class="problem-card" id="problem-energy">
+          <div class="problem-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <h3 class="problem-type">Energy</h3>
+          <p class="problem-text">Lights and fans left running in empty rooms.</p>
+        </div>
+
+        <!-- Water Problem Card -->
+        <div class="problem-card" id="problem-water">
+          <div class="problem-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
+            </svg>
+          </div>
+          <h3 class="problem-type">Water</h3>
+          <p class="problem-text">Leaking taps in shared bathrooms going unreported for days.</p>
+        </div>
+
+        <!-- Waste Problem Card -->
+        <div class="problem-card" id="problem-waste">
+          <div class="problem-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </div>
+          <h3 class="problem-type">Waste</h3>
+          <p class="problem-text">Excess food waste in canteens with no recycling in place.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: How It Works Section -->
+  <section class="how-section scroll-fade" id="how-it-works" aria-label="How ResourceRadar works">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Workflow</span>
+        <h2 class="section-title">How it works</h2>
+        <p class="section-description">
+          A simple three-step cycle that connects community awareness with immediate operational resolution.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card" id="step-report">
+          <div class="step-top">
+            <span class="step-badge">Step 01</span>
+            <div class="step-icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+          </div>
+          <h3 class="step-title">Report</h3>
+          <p class="step-desc">Spot an inefficiency? Report it in seconds with location and category.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card" id="step-track">
+          <div class="step-top">
+            <span class="step-badge">Step 02</span>
+            <div class="step-icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </div>
+          </div>
+          <h3 class="step-title">Track</h3>
+          <p class="step-desc">Reports are visible to the community, so nothing gets forgotten.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card" id="step-improve">
+          <div class="step-top">
+            <span class="step-badge">Step 03</span>
+            <div class="step-icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+          </div>
+          <h3 class="step-title">Improve</h3>
+          <p class="step-desc">Authorities and residents act on visible, tracked issues.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Closing Section -->
+  <section class="about-closing-section scroll-fade" id="closing" aria-label="Take action with ResourceRadar">
+    <div class="container about-closing-box">
+      <h2 class="about-closing-title">Small changes in shared spaces add up to real impact.</h2>
+      <p class="about-closing-subtext">
+        Join your hostel mates, classmates, and coworkers in building an accountable, resource-smart environment.
+      </p>
+      <a href="{{ url_for('report') }}" class="btn btn-primary" id="about-cta-report">
+        <span>Report an issue</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+{% endblock %}

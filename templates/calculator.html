@@ -1,0 +1,665 @@
+{% extends "base.html" %}
+
+{% set active_page = "calculator" %}
+
+{% block title %}Resource Efficiency Calculator — ResourceRadar{% endblock %}
+
+{% block head_extra %}
+<!-- Chart.js CDN for live preview donut chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="calculator-page-wrapper">
+  <div class="container">
+
+    <!-- Page Header -->
+    <header class="calculator-header scroll-fade is-visible">
+      <span class="section-tag">Interactive evaluation</span>
+      <h1 class="calculator-main-title">Resource Efficiency Calculator</h1>
+      <p class="calculator-subtext">Estimate resource use for your shared space.</p>
+    </header>
+
+    {% if last_result %}
+    <!-- Banner for previously saved calculation -->
+    <div class="last-result-banner scroll-fade is-visible" id="last-result-banner">
+      <div class="banner-content">
+        <div class="banner-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div>
+          <strong>Last saved result: {{ last_result.total_score }}/100</strong>
+          <span class="banner-sub">
+            (Energy: {{ last_result.energy_score }}, Water: {{ last_result.water_score }}, Waste: {{ last_result.waste_score }})
+            · After submit: last saved result will appear here, while the form resets.
+          </span>
+        </div>
+      </div>
+      <a href="{{ url_for('calculator_result', id=last_result.id) }}" class="btn-banner-link">View breakdown &rarr;</a>
+    </div>
+    {% endif %}
+
+    <!-- Two-column Calculator Container -->
+    <div class="calculator-layout-grid">
+
+      <!-- LEFT COLUMN: Multi-step Form -->
+      <section class="calculator-form-column" aria-label="Calculator Form">
+        <div class="calc-card form-container-card">
+
+          <!-- Step Progress Indicator -->
+          <div class="calc-progress-wrapper" aria-label="Form progress">
+            <div class="calc-progress-meta">
+              <span class="progress-step-text" id="progress-step-indicator">Step 1 of 3</span>
+              <span class="progress-step-name" id="progress-step-name">Energy</span>
+            </div>
+            <div class="calc-progress-track" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" id="calc-progress-bar-container">
+              <div class="calc-progress-fill" id="calc-progress-fill" style="width: 33.33%;"></div>
+            </div>
+          </div>
+
+          <!-- Main Calculator Form (Normal POST on final submit) -->
+          <form id="efficiency-calculator-form" action="{{ url_for('calculator') }}" method="POST" novalidate>
+
+            <!-- ================= STEP 1: Energy ================= -->
+            <div class="calc-step-panel is-active" id="calc-step-1" data-step="1">
+              <div class="step-panel-header">
+                <div>
+                  <h2 class="step-title">Energy Usage</h2>
+                  <p class="step-description">Tell us about the daily electricity use in your shared space.</p>
+                </div>
+                <span class="step-badge" id="badge-step-1">Step 1 of 3 · Energy</span>
+              </div>
+
+              <div class="calc-fields-grid">
+                <!-- Lights Count -->
+                <div class="calc-field-group">
+                  <label for="num_lights" class="calc-label">
+                    <span>Number of lights/bulbs used</span>
+                    <span class="calc-label-hint">Total count</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="num_lights" name="num_lights" class="calc-input" min="0" step="1" value="0" placeholder="0">
+                    <span class="input-unit">bulbs</span>
+                  </div>
+                </div>
+
+                <!-- Light Hours -->
+                <div class="calc-field-group">
+                  <label for="light_hours" class="calc-label">
+                    <span>Average daily hours lights are on</span>
+                    <span class="calc-label-hint">Hours/day (0-24)</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="light_hours" name="light_hours" class="calc-input" min="0" max="24" step="0.5" value="0" placeholder="0">
+                    <span class="input-unit">hrs/day</span>
+                  </div>
+                </div>
+
+                <!-- AC / Fans Count -->
+                <div class="calc-field-group">
+                  <label for="num_ac" class="calc-label">
+                    <span>Number of ACs or fans</span>
+                    <span class="calc-label-hint">Active cooling units</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="num_ac" name="num_ac" class="calc-input" min="0" step="1" value="0" placeholder="0">
+                    <span class="input-unit">units</span>
+                  </div>
+                </div>
+
+                <!-- AC / Fans Hours -->
+                <div class="calc-field-group">
+                  <label for="ac_hours" class="calc-label">
+                    <span>Average daily hours AC/fan is on</span>
+                    <span class="calc-label-hint">Hours/day (0-24)</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="ac_hours" name="ac_hours" class="calc-input" min="0" max="24" step="0.5" value="0" placeholder="0">
+                    <span class="input-unit">hrs/day</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 1 Controls -->
+              <div class="calc-step-actions step-actions-right">
+                <button type="button" class="btn btn-primary btn-step-next" id="btn-to-step-2">
+                  <span>Next: Water</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- ================= STEP 2: Water ================= -->
+            <div class="calc-step-panel" id="calc-step-2" data-step="2" style="display: none;">
+              <div class="step-panel-header">
+                <div>
+                  <h2 class="step-title">Water Usage</h2>
+                  <p class="step-description">Detail your daily water habits and plumbing conditions.</p>
+                </div>
+                <span class="step-badge" id="badge-step-2">Step 2 of 3 · Water</span>
+              </div>
+
+              <div class="calc-fields-grid">
+                <!-- Taps / Bathrooms Count -->
+                <div class="calc-field-group">
+                  <label for="num_taps" class="calc-label">
+                    <span>Number of shared taps/bathrooms</span>
+                    <span class="calc-label-hint">Points of access</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="num_taps" name="num_taps" class="calc-input" min="0" step="1" value="0" placeholder="0">
+                    <span class="input-unit">taps</span>
+                  </div>
+                </div>
+
+                <!-- Water Hours -->
+                <div class="calc-field-group">
+                  <label for="water_hours" class="calc-label">
+                    <span>Average daily hours of water use</span>
+                    <span class="calc-label-hint">Combined run time</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="water_hours" name="water_hours" class="calc-input" min="0" max="24" step="0.5" value="0" placeholder="0">
+                    <span class="input-unit">hrs/day</span>
+                  </div>
+                </div>
+
+                <!-- Leakage Radio Group -->
+                <div class="calc-field-group calc-field-full">
+                  <label class="calc-label">
+                    <span>Any leakage present?</span>
+                    <span class="calc-label-hint">Dripping taps, flushes, or pipes</span>
+                  </label>
+                  <div class="radio-pill-group" role="radiogroup" aria-label="Leakage present">
+                    <label class="radio-pill-option">
+                      <input type="radio" name="leakage" value="no" checked class="calc-radio">
+                      <span class="pill-display">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        No leakages detected
+                      </span>
+                    </label>
+                    <label class="radio-pill-option">
+                      <input type="radio" name="leakage" value="yes" class="calc-radio">
+                      <span class="pill-display pill-warning">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="12" y1="9" x2="12" y2="13"></line>
+                          <circle cx="12" cy="17" r="1"></circle>
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        </svg>
+                        Yes, active drip or leak
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 Controls -->
+              <div class="calc-step-actions step-actions-split">
+                <button type="button" class="btn btn-secondary btn-step-prev" id="btn-back-to-step-1">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <span>Back: Energy</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-step-next" id="btn-to-step-3">
+                  <span>Next: Waste</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- ================= STEP 3: Waste ================= -->
+            <div class="calc-step-panel" id="calc-step-3" data-step="3" style="display: none;">
+              <div class="step-panel-header">
+                <div>
+                  <h2 class="step-title">Waste Habits</h2>
+                  <p class="step-description">Tell us about daily solid waste output and recycling efforts.</p>
+                </div>
+                <span class="step-badge" id="badge-step-3">Step 3 of 3 · Waste</span>
+              </div>
+
+              <div class="calc-fields-grid">
+                <!-- Daily Waste (kg) -->
+                <div class="calc-field-group">
+                  <label for="daily_waste_kg" class="calc-label">
+                    <span>Approximate daily waste generated</span>
+                    <span class="calc-label-hint">Estimated kilograms</span>
+                  </label>
+                  <div class="input-with-icon">
+                    <input type="number" id="daily_waste_kg" name="daily_waste_kg" class="calc-input" min="0" step="0.5" value="0" placeholder="0">
+                    <span class="input-unit">kg/day</span>
+                  </div>
+                </div>
+
+                <!-- Food Waste Level -->
+                <div class="calc-field-group">
+                  <label for="food_waste" class="calc-label">
+                    <span>Food waste level</span>
+                    <span class="calc-label-hint">Leftover food per day</span>
+                  </label>
+                  <div class="select-wrapper">
+                    <select id="food_waste" name="food_waste" class="calc-select">
+                      <option value="low">Low (minimal scraps, good portioning)</option>
+                      <option value="medium" selected>Medium (occasional leftovers)</option>
+                      <option value="high">High (frequent large food discards)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Recycling Done Radio Group -->
+                <div class="calc-field-group calc-field-full">
+                  <label class="calc-label">
+                    <span>Recycling done?</span>
+                    <span class="calc-label-hint">Plastic, paper, cans segregated</span>
+                  </label>
+                  <div class="radio-pill-group" role="radiogroup" aria-label="Recycling practiced">
+                    <label class="radio-pill-option">
+                      <input type="radio" name="recycling" value="yes" checked class="calc-radio">
+                      <span class="pill-display">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Yes, segregated for recycling
+                      </span>
+                    </label>
+                    <label class="radio-pill-option">
+                      <input type="radio" name="recycling" value="no" class="calc-radio">
+                      <span class="pill-display pill-warning">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        No recycling / mixed disposal
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3 Controls -->
+              <div class="calc-step-actions step-actions-split">
+                <button type="button" class="btn btn-secondary btn-step-prev" id="btn-back-to-step-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <span>Back: Water</span>
+                </button>
+                <button type="submit" class="btn btn-primary btn-submit-calc" id="btn-submit-calculator">
+                  <span>Submit calculation</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: Live Preview Panel -->
+      <aside class="calculator-preview-column" aria-label="Live Preview">
+        <div class="calc-card preview-sticky-card" id="preview-panel">
+          
+          <div class="preview-header">
+            <span class="live-pulse-dot" aria-hidden="true"></span>
+            <h2 class="preview-title" id="preview-heading">Live preview · starts at 0</h2>
+          </div>
+
+          <!-- Score Display -->
+          <div class="preview-score-box">
+            <div class="preview-score-number" id="preview-score-value">0/100</div>
+            <div class="preview-status-pill status-waiting" id="preview-status-badge">
+              Waiting for entries
+            </div>
+          </div>
+
+          <!-- Donut Chart Canvas Container -->
+          <div class="preview-chart-wrapper">
+            <canvas id="live-donut-chart" aria-label="Live resource breakdown chart" role="img"></canvas>
+            <div class="chart-center-label" id="chart-center-text" aria-hidden="true">
+              <span class="chart-center-title">Waste Score</span>
+              <span class="chart-center-sub" id="chart-center-sub">Breakdown</span>
+            </div>
+          </div>
+
+          <!-- Chart Legend -->
+          <div class="preview-legend-row" id="preview-legend">
+            <span class="legend-item legend-energy">
+              <span class="legend-dot dot-energy"></span> Energy <strong id="leg-val-energy">0</strong>
+            </span>
+            <span class="legend-item legend-water">
+              <span class="legend-dot dot-water"></span> Water <strong id="leg-val-water">0</strong>
+            </span>
+            <span class="legend-item legend-waste">
+              <span class="legend-dot dot-waste"></span> Waste <strong id="leg-val-waste">0</strong>
+            </span>
+          </div>
+
+          <!-- Short informative prompt -->
+          <p class="preview-hint-text" id="preview-hint-message">
+            {% if last_result %}
+            After submit: last saved result will appear here, while the form resets.
+            {% else %}
+            Fill the form to see a live resource-use preview.
+            {% endif %}
+          </p>
+
+          <div class="preview-info-card">
+            <div class="preview-info-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>How efficiency scoring works</span>
+            </div>
+            <p class="preview-info-body">
+              Calculations evaluate electricity hours, water point run-times, and solid waste volume. Lower waste points across all categories yield a higher efficiency score out of 100.
+            </p>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+/**
+ * Resource Efficiency Calculator Client Script
+ * - Client-side multi-step navigation (Step 1 -> Step 2 -> Step 3)
+ * - Real-time client-side live preview & score formula
+ * - Dynamic Chart.js Donut Chart
+ */
+(function() {
+  // Elements
+  const form = document.getElementById('efficiency-calculator-form');
+  const stepPanels = [
+    document.getElementById('calc-step-1'),
+    document.getElementById('calc-step-2'),
+    document.getElementById('calc-step-3')
+  ];
+  const progressFill = document.getElementById('calc-progress-fill');
+  const progressStepIndicator = document.getElementById('progress-step-indicator');
+  const progressStepName = document.getElementById('progress-step-name');
+
+  const stepNames = ['Energy', 'Water', 'Waste'];
+  let currentStep = 1;
+
+  // Step Navigation Handlers
+  const btnToStep2 = document.getElementById('btn-to-step-2');
+  const btnBackToStep1 = document.getElementById('btn-back-to-step-1');
+  const btnToStep3 = document.getElementById('btn-to-step-3');
+  const btnBackToStep2 = document.getElementById('btn-back-to-step-2');
+
+  function setStep(stepNum) {
+    currentStep = stepNum;
+    stepPanels.forEach((panel, index) => {
+      if (index + 1 === stepNum) {
+        panel.style.display = 'block';
+        panel.classList.add('is-active');
+      } else {
+        panel.style.display = 'none';
+        panel.classList.remove('is-active');
+      }
+    });
+
+    // Update progress bar
+    const progressPercent = (stepNum / 3) * 100;
+    if (progressFill) {
+      progressFill.style.width = progressPercent + '%';
+    }
+    if (progressStepIndicator) {
+      progressStepIndicator.textContent = `Step ${stepNum} of 3`;
+    }
+    if (progressStepName) {
+      progressStepName.textContent = stepNames[stepNum - 1];
+    }
+  }
+
+  if (btnToStep2) btnToStep2.addEventListener('click', () => setStep(2));
+  if (btnBackToStep1) btnBackToStep1.addEventListener('click', () => setStep(1));
+  if (btnToStep3) btnToStep3.addEventListener('click', () => setStep(3));
+  if (btnBackToStep2) btnBackToStep2.addEventListener('click', () => setStep(2));
+
+  // Live Preview Elements
+  const scoreValueEl = document.getElementById('preview-score-value');
+  const statusBadgeEl = document.getElementById('preview-status-badge');
+  const legEnergy = document.getElementById('leg-val-energy');
+  const legWater = document.getElementById('leg-val-water');
+  const legWaste = document.getElementById('leg-val-waste');
+  const hintMessageEl = document.getElementById('preview-hint-message');
+  const previewHeading = document.getElementById('preview-heading');
+
+  // Input Elements
+  const numLightsInput = document.getElementById('num_lights');
+  const lightHoursInput = document.getElementById('light_hours');
+  const numAcInput = document.getElementById('num_ac');
+  const acHoursInput = document.getElementById('ac_hours');
+  const numTapsInput = document.getElementById('num_taps');
+  const waterHoursInput = document.getElementById('water_hours');
+  const dailyWasteInput = document.getElementById('daily_waste_kg');
+  const foodWasteSelect = document.getElementById('food_waste');
+
+  // Initialize Chart.js
+  const canvas = document.getElementById('live-donut-chart');
+  let donutChart = null;
+
+  const colorEnergy = '#E9C46A'; // Amber
+  const colorWater = '#4A90D9';  // Blue
+  const colorWaste = '#E76F51';  // Coral
+  const colorEmpty = '#E2E8F0';  // Light Gray empty ring
+
+  function initChart() {
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    donutChart = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: ['Empty'],
+        datasets: [{
+          data: [100],
+          backgroundColor: [colorEmpty],
+          borderWidth: 0,
+          hoverOffset: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '72%',
+        animation: {
+          duration: 350,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: false
+          }
+        }
+      }
+    });
+  }
+
+  // Calculate scores matching Flask backend logic exactly
+  function calculateScores() {
+    const numLights = Math.max(0, parseFloat(numLightsInput.value) || 0);
+    const lightHours = Math.max(0, parseFloat(lightHoursInput.value) || 0);
+    const numAc = Math.max(0, parseFloat(numAcInput.value) || 0);
+    const acHours = Math.max(0, parseFloat(acHoursInput.value) || 0);
+
+    const numTaps = Math.max(0, parseFloat(numTapsInput.value) || 0);
+    const waterHours = Math.max(0, parseFloat(waterHoursInput.value) || 0);
+    const leakageRadio = form.querySelector('input[name="leakage"]:checked');
+    const hasLeakage = leakageRadio ? leakageRadio.value === 'yes' : false;
+
+    const dailyWasteKg = Math.max(0, parseFloat(dailyWasteInput.value) || 0);
+    const recyclingRadio = form.querySelector('input[name="recycling"]:checked');
+    const recyclingDone = recyclingRadio ? recyclingRadio.value === 'yes' : true;
+    const foodWasteLevel = foodWasteSelect ? foodWasteSelect.value : 'medium';
+
+    // Check if user has entered any non-zero inputs
+    const hasEnteredValues = (numLights > 0 || lightHours > 0 || numAc > 0 || acHours > 0 ||
+                              numTaps > 0 || waterHours > 0 || dailyWasteKg > 0 || hasLeakage || !recyclingDone);
+
+    if (!hasEnteredValues) {
+      // Empty / Start State
+      return {
+        isEmpty: true,
+        energyWaste: 0,
+        waterWaste: 0,
+        wasteWaste: 0,
+        totalScore: 0
+      };
+    }
+
+    // Step 1 — Energy:
+    const lightUnits = numLights * lightHours;
+    const acUnits = numAc * acHours;
+    const totalEnergy = lightUnits + acUnits;
+    let energyWaste = 10;
+    if (totalEnergy > 300) {
+      energyWaste = 33;
+    } else if (totalEnergy >= 150) {
+      energyWaste = 20;
+    } else {
+      energyWaste = 10;
+    }
+
+    // Step 2 — Water:
+    let waterUnits = numTaps * waterHours;
+    if (hasLeakage) {
+      waterUnits += 10;
+    }
+    let waterWaste = 10;
+    if (waterUnits > 100) {
+      waterWaste = 33;
+    } else if (waterUnits >= 50) {
+      waterWaste = 20;
+    } else {
+      waterWaste = 10;
+    }
+
+    // Step 3 — Waste:
+    let foodWasteBase = 15;
+    if (foodWasteLevel === 'low') {
+      foodWasteBase = 5;
+    } else if (foodWasteLevel === 'high') {
+      foodWasteBase = 25;
+    }
+
+    let wasteUnits = dailyWasteKg * 10 + foodWasteBase;
+    if (!recyclingDone) {
+      wasteUnits += 8;
+    }
+    let wasteWaste = 10;
+    if (wasteUnits > 100) {
+      wasteWaste = 33;
+    } else if (wasteUnits >= 50) {
+      wasteWaste = 20;
+    } else {
+      wasteWaste = 10;
+    }
+
+    // Final score
+    const totalScore = Math.max(0, Math.min(100, 100 - (energyWaste + waterWaste + wasteWaste)));
+
+    return {
+      isEmpty: false,
+      energyWaste,
+      waterWaste,
+      wasteWaste,
+      totalScore
+    };
+  }
+
+  function updatePreview() {
+    const scores = calculateScores();
+
+    if (scores.isEmpty) {
+      scoreValueEl.textContent = '0/100';
+      statusBadgeEl.textContent = 'Waiting for entries';
+      statusBadgeEl.className = 'preview-status-pill status-waiting';
+
+      if (previewHeading) previewHeading.textContent = 'Live preview · starts at 0';
+
+      legEnergy.textContent = '0';
+      legWater.textContent = '0';
+      legWaste.textContent = '0';
+
+      if (hintMessageEl) {
+        hintMessageEl.textContent = 'Fill the form to see a live resource-use preview.';
+      }
+
+      if (donutChart) {
+        donutChart.data.labels = ['Empty'];
+        donutChart.data.datasets[0].data = [100];
+        donutChart.data.datasets[0].backgroundColor = [colorEmpty];
+        donutChart.options.plugins.tooltip.enabled = false;
+        donutChart.update();
+      }
+      return;
+    }
+
+    // Active calculations
+    scoreValueEl.textContent = `${scores.totalScore}/100`;
+    if (previewHeading) previewHeading.textContent = 'Live efficiency estimate';
+
+    // Status Badge: Good (>70), Average (40-70), Needs Improvement (<40)
+    if (scores.totalScore > 70) {
+      statusBadgeEl.textContent = 'Good';
+      statusBadgeEl.className = 'preview-status-pill status-good';
+    } else if (scores.totalScore >= 40) {
+      statusBadgeEl.textContent = 'Average';
+      statusBadgeEl.className = 'preview-status-pill status-average';
+    } else {
+      statusBadgeEl.textContent = 'Needs Improvement';
+      statusBadgeEl.className = 'preview-status-pill status-needs-improvement';
+    }
+
+    legEnergy.textContent = scores.energyWaste;
+    legWater.textContent = scores.waterWaste;
+    legWaste.textContent = scores.wasteWaste;
+
+    if (hintMessageEl) {
+      hintMessageEl.textContent = 'Real-time estimate based on your current inputs.';
+    }
+
+    if (donutChart) {
+      donutChart.data.labels = ['Energy Waste', 'Water Waste', 'Solid Waste'];
+      donutChart.data.datasets[0].data = [scores.energyWaste, scores.waterWaste, scores.wasteWaste];
+      donutChart.data.datasets[0].backgroundColor = [colorEnergy, colorWater, colorWaste];
+      donutChart.options.plugins.tooltip.enabled = true;
+      donutChart.update();
+    }
+  }
+
+  // Attach dynamic input listeners to all form controls
+  form.querySelectorAll('input, select').forEach((elem) => {
+    elem.addEventListener('input', updatePreview);
+    elem.addEventListener('change', updatePreview);
+  });
+
+  // Init chart and preview on page ready
+  initChart();
+  updatePreview();
+})();
+</script>
+{% endblock %}

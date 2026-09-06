@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} — ResourceRadar{% endblock %}
+
+{% block content %}
+<section class="placeholder-section">
+  <div class="container">
+    <div class="placeholder-card scroll-fade is-visible">
+      <div class="placeholder-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Coming soon</span>
+      </div>
+
+      <h1 class="placeholder-title">{{ page_title }}</h1>
+
+      <p class="placeholder-text">
+        {{ description }}
+      </p>
+
+      <div class="btn-group" style="justify-content: center;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary" id="btn-back-home">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          <span>Return home</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

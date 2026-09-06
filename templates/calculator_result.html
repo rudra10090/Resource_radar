@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% set active_page = "calculator" %}
+
+{% block title %}Your Efficiency Score — ResourceRadar{% endblock %}
+
+{% block head_extra %}
+<!-- Chart.js CDN for result breakdown donut chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="calculator-result-wrapper">
+  <div class="container">
+
+    <!-- Header Section -->
+    <header class="result-header scroll-fade is-visible">
+      <span class="section-tag">Evaluation outcome</span>
+      <h1 class="result-main-heading">Your Efficiency Score</h1>
+      <p class="result-subtext">Comprehensive breakdown of resource use and community benchmarks.</p>
+    </header>
+
+    <!-- Main Results Grid -->
+    <div class="result-grid">
+
+      <!-- Primary Score & Breakdown Card -->
+      <section class="calc-card result-score-card scroll-fade is-visible" aria-label="Score Overview">
+        <div class="result-badge-container">
+          <span class="preview-status-pill {{ status_class }}" id="result-status-pill">
+            {{ status_label }}
+          </span>
+        </div>
+
+        <!-- Big Score Number -->
+        <div class="big-score-display" id="big-score-number">
+          {{ result.total_score }}<span class="big-score-max">/100</span>
+        </div>
+        <p class="big-score-caption">Overall space efficiency rating</p>
+
+        <!-- Donut Chart of Breakdown -->
+        <div class="result-chart-container">
+          <canvas id="result-breakdown-chart" aria-label="Resource breakdown donut chart" role="img"></canvas>
+          <div class="chart-center-label" aria-hidden="true">
+            <span class="chart-center-title">Waste Units</span>
+            <span class="chart-center-sub">Category load</span>
+          </div>
+        </div>
+
+        <!-- Waste Scores Breakdown Cards -->
+        <div class="waste-scores-grid">
+          <div class="waste-score-pill pill-energy">
+            <div class="pill-dot dot-energy"></div>
+            <div class="pill-info">
+              <span class="pill-title">Energy Waste</span>
+              <strong class="pill-val">{{ result.energy_score }} / 33</strong>
+            </div>
+          </div>
+
+          <div class="waste-score-pill pill-water">
+            <div class="pill-dot dot-water"></div>
+            <div class="pill-info">
+              <span class="pill-title">Water Waste</span>
+              <strong class="pill-val">{{ result.water_score }} / 33</strong>
+            </div>
+          </div>
+
+          <div class="waste-score-pill pill-waste">
+            <div class="pill-dot dot-waste"></div>
+            <div class="pill-info">
+              <span class="pill-title">Solid Waste</span>
+              <strong class="pill-val">{{ result.waste_score }} / 33</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personalized Tip Box -->
+        <div class="personalized-tip-card">
+          <div class="tip-card-header">
+            <div class="tip-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v1"></path>
+                <path d="M12 21v1"></path>
+                <path d="M4.22 4.22l.71.71"></path>
+                <path d="M18.36 18.36l.71.71"></path>
+                <path d="M1 12h2"></path>
+                <path d="M21 12h2"></path>
+                <path d="M4.22 19.78l.71-.71"></path>
+                <path d="M18.36 5.64l.71-.71"></path>
+                <circle cx="12" cy="12" r="5"></circle>
+              </svg>
+            </div>
+            <h3 class="tip-card-title">Personalized action tip</h3>
+          </div>
+          <p class="tip-card-body" id="personalized-tip-text">
+            {{ personalized_tip }}
+          </p>
+        </div>
+      </section>
+
+      <!-- Community Benchmark & Actions Column -->
+      <div class="result-side-column">
+
+        <!-- Community Benchmark Card -->
+        <section class="calc-card community-benchmark-card scroll-fade is-visible" aria-label="Community Benchmark">
+          <div class="benchmark-header">
+            <div class="benchmark-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="benchmark-title">Community comparison</h2>
+              <p class="benchmark-subtitle">Benchmarked against recorded shared spaces</p>
+            </div>
+          </div>
+
+          <div class="community-stat-block">
+            <div class="stat-number-row">
+              <span class="community-stat-label">Community Average:</span>
+              <strong class="community-stat-value" id="community-avg-val">{{ community_avg }}/100</strong>
+            </div>
+
+            <!-- Comparison Summary Text -->
+            <div class="community-diff-badge {% if score_diff >= 0 %}diff-positive{% else %}diff-negative{% endif %}">
+              {% if score_diff > 0 %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+              <span>Your score is <strong>{{ score_diff|abs }} points above</strong> the community average.</span>
+              {% elif score_diff < 0 %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <span>Your score is <strong>{{ score_diff|abs }} points below</strong> the community average.</span>
+              {% else %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Your score is <strong>on par with</strong> the community average.</span>
+              {% endif %}
+            </div>
+
+            <!-- Visual Bar Comparison -->
+            <div class="benchmark-bars-wrapper">
+              <!-- Your Score Bar -->
+              <div class="bar-group">
+                <div class="bar-label-row">
+                  <span>Your space</span>
+                  <strong>{{ result.total_score }}/100</strong>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill user-bar-fill" style="width: {{ result.total_score }}%;"></div>
+                </div>
+              </div>
+
+              <!-- Community Average Bar -->
+              <div class="bar-group">
+                <div class="bar-label-row">
+                  <span>Community average</span>
+                  <strong>{{ community_avg }}/100</strong>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill community-bar-fill" style="width: {{ community_avg }}%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <p class="benchmark-note">
+              Community ratings are aggregated across active dorms, classrooms, and offices to foster campus-wide resource accountability.
+            </p>
+          </div>
+        </section>
+
+        <!-- Next Actions Card -->
+        <section class="calc-card actions-card scroll-fade is-visible" aria-label="Next Steps">
+          <h3 class="actions-title">Take the next step</h3>
+          <p class="actions-subtext">Re-evaluate alternative usage patterns or log specific leakages for remediation.</p>
+
+          <div class="result-action-buttons">
+            <!-- Calculate Again Button -->
+            <a href="{{ url_for('calculator') }}" class="btn btn-secondary btn-full-action" id="btn-calc-again">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>Calculate Again</span>
+            </a>
+
+            <!-- Report an Issue Button -->
+            <a href="{{ url_for('report') }}" class="btn btn-primary btn-full-action" id="btn-report-issue">
+              <span>Report an Issue</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </a>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+/**
+ * Render Chart.js Donut breakdown chart on Result Page
+ */
+(function() {
+  const canvas = document.getElementById('result-breakdown-chart');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  const energyScore = {{ result.energy_score }};
+  const waterScore = {{ result.water_score }};
+  const wasteScore = {{ result.waste_score }};
+
+  new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: ['Energy Waste', 'Water Waste', 'Solid Waste'],
+      datasets: [{
+        data: [energyScore, waterScore, wasteScore],
+        backgroundColor: ['#E9C46A', '#4A90D9', '#E76F51'],
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      animation: {
+        duration: 800,
+        easing: 'easeOutBack'
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const val = context.raw || 0;
+              return ` ${label}: ${val} waste points`;
+            }
+          }
+        }
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% set active_page = "home" %}
+
+{% block title %}ResourceRadar — Smarter resource use for shared spaces{% endblock %}
+
+{% block content %}
+<!-- Section 1: Hero Section -->
+<section class="hero-section scroll-fade" id="hero">
+  <div class="container hero-wrapper">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="m9 12 2 2 4-4"></path>
+      </svg>
+      <span>Community-driven resource stewardship</span>
+    </div>
+
+    <h1 class="hero-title">Smarter resource use for shared spaces</h1>
+
+    <p class="hero-subtext">
+      Track, report, and reduce energy, water, and waste in your hostel, campus, or community.
+    </p>
+
+    <div class="btn-group hero-actions">
+      <a href="{{ url_for('report') }}" class="btn btn-primary" id="hero-cta-report">
+        <span>Report an issue</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </a>
+      <a href="{{ url_for('calculator') }}" class="btn btn-outline" id="hero-cta-action">
+        <span>Take action</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Live Stats Section -->
+<section class="stats-section scroll-fade" id="stats" aria-label="Community impact stats">
+  <div class="container">
+    <div class="stats-grid">
+      <!-- Stat Card 1 -->
+      <div class="stat-card" id="stat-reports">
+        <div class="stat-number-wrapper">
+          <span class="stat-number" data-target="{{ total_reports|default(reports_count|default(0)) }}">{{ total_reports|default(reports_count|default(0)) }}</span>
+        </div>
+        <p class="stat-label">Reports submitted</p>
+      </div>
+
+      <!-- Stat Card 2 -->
+      <div class="stat-card" id="stat-fixed">
+        <div class="stat-number-wrapper">
+          <span class="stat-number" data-target="{{ fixed_reports|default(fixed_count|default(0)) }}">{{ fixed_reports|default(fixed_count|default(0)) }}</span>
+        </div>
+        <p class="stat-label">Issues fixed</p>
+      </div>
+
+      <!-- Stat Card 3 -->
+      <div class="stat-card" id="stat-spaces">
+        <div class="stat-number-wrapper">
+          <span class="stat-number" data-target="{{ spaces_count|default(14) }}">{{ spaces_count|default(14) }}</span>
+        </div>
+        <p class="stat-label">Spaces tracked</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Category Cards Section -->
+<section class="categories-section scroll-fade" id="categories" aria-label="Resource categories">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Focus areas</span>
+      <h2 class="section-title">Targeted monitoring by resource</h2>
+      <p class="section-description">Identify waste patterns quickly across the three core areas of communal
+        consumption.</p>
+    </div>
+
+    <div class="category-grid">
+      <!-- Card 1: Energy -->
+      <a href="{{ url_for('resources') }}" class="category-card" id="card-energy" aria-label="Energy resource guide">
+        <div class="category-icon-box" aria-hidden="true">
+          <!-- Lightning Bolt Icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <h3 class="category-name">Energy</h3>
+        <p class="category-desc">Tackle running air conditioners in empty halls, unmonitored lighting, and unattended
+          heating appliances.</p>
+        <span class="category-link-hint">
+          Explore energy guides
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </span>
+      </a>
+
+      <!-- Card 2: Water -->
+      <a href="{{ url_for('resources') }}" class="category-card" id="card-water" aria-label="Water resource guide">
+        <div class="category-icon-box" aria-hidden="true">
+          <!-- Droplet Icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path
+              d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z">
+            </path>
+          </svg>
+        </div>
+        <h3 class="category-name">Water</h3>
+        <p class="category-desc">Spot dripping faucets, cistern overflows, and faulty washroom plumbing before gallons
+          vanish unheeded.</p>
+        <span class="category-link-hint">
+          Explore water guides
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </span>
+      </a>
+
+      <!-- Card 3: Waste -->
+      <a href="{{ url_for('resources') }}" class="category-card" id="card-waste" aria-label="Waste resource guide">
+        <div class="category-icon-box" aria-hidden="true">
+          <!-- Trash Icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </div>
+        <h3 class="category-name">Waste</h3>
+        <p class="category-desc">Address overflowing collection bins, improper sorting, and excessive single-use
+          plastics in common areas.</p>
+        <span class="category-link-hint">
+          Explore waste guides
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Why This Matters Section -->
+<section class="why-section scroll-fade" id="why-it-matters" aria-label="Why ResourceRadar matters">
+  <div class="container why-wrapper">
+    <div class="why-content">
+      <h2 class="why-title">Why this matters</h2>
+      <p class="why-lead">
+        Shared spaces like hostels, college campuses, and co-working offices often waste staggering amounts of energy
+        and water while generating excess landfill waste — simply because no single person feels personally accountable
+        or has an easy way to alert facilities teams.
+      </p>
+    </div>
+
+    <div class="facts-grid">
+      <!-- Energy Fact -->
+      <div class="fact-item">
+        <span class="fact-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          Energy impact
+        </span>
+        <p class="fact-text">
+          Empty hostel common rooms and unused computer labs frequently leave lighting and climate control running
+          non-stop.
+        </p>
+      </div>
+
+      <!-- Water Fact -->
+      <div class="fact-item">
+        <span class="fact-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path
+              d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z">
+            </path>
+          </svg>
+          Water loss
+        </span>
+        <p class="fact-text">
+          Leaking taps in shared bathrooms often go unreported for days, leaking upwards of 3,000 liters per fixture
+          each month.
+        </p>
+      </div>
+
+      <!-- Waste Fact -->
+      <div class="fact-item">
+        <span class="fact-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+          </svg>
+          Waste sorting
+        </span>
+        <p class="fact-text">
+          Mixed disposal bins in cafeterias cause over 60% of otherwise clean recyclable packaging to end up in local
+          municipal dumps.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5: Final Call-to-Action -->
+<section class="cta-section scroll-fade" id="cta" aria-label="Get started with ResourceRadar">
+  <div class="container cta-box">
+    <h2 class="cta-title">Join the movement for smarter shared spaces</h2>
+    <p class="cta-subtext">
+      Spot an issue in your building today? Take thirty seconds to flag it and keep your community accountable.
+    </p>
+    <a href="{{ url_for('report') }}" class="btn btn-primary" id="final-cta-button">
+      <span>Get started</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h14"></path>
+        <path d="m12 5 7 7-7 7"></path>
+      </svg>
+    </a>
+  </div>
+</section>
+{% endblock %}
