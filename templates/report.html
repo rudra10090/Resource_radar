@@ -18,28 +18,7 @@
         </div>
 
         <form action="{{ url_for('report') }}" method="POST" class="report-form" novalidate id="report-form">
-          <!-- 1. Your Name -->
-          <div class="form-group {% if errors.get('name') %}has-error{% endif %}">
-            <label for="name" class="form-label">Your name</label>
-            <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Alex Johnson"
-              value="{{ form_data.get('name', '') }}" {% if session.get('user_id') %}readonly{% endif %} required>
-            {% if errors.get('name') %}
-            <p class="form-error" id="error-name">{{ errors.get('name') }}</p>
-            {% endif %}
-          </div>
-
-          <!-- 2. Institute Name -->
-          <div class="form-group {% if errors.get('institute_name') %}has-error{% endif %}">
-            <label for="institute_name" class="form-label">Institute name</label>
-            <input type="text" id="institute_name" name="institute_name" class="form-input"
-              placeholder="eg: Lovely Professional University" value="{{ form_data.get('institute_name', '') }}"
-              {% if session.get('user_id') %}readonly{% endif %} required>
-            {% if errors.get('institute_name') %}
-            <p class="form-error" id="error-institute">{{ errors.get('institute_name') }}</p>
-            {% endif %}
-          </div>
-
-          <!-- 3. Location -->
+          <!-- 1. Location -->
           <div class="form-group {% if errors.get('location') %}has-error{% endif %}">
             <label for="location" class="form-label">Location</label>
             <input type="text" id="location" name="location" class="form-input"
@@ -49,7 +28,7 @@
             {% endif %}
           </div>
 
-          <!-- 4. Category -->
+          <!-- 2. Category -->
           <div class="form-group {% if errors.get('category') %}has-error{% endif %}">
             <label for="category" class="form-label">Category</label>
             <div class="select-wrapper">
@@ -66,7 +45,7 @@
             {% endif %}
           </div>
 
-          <!-- 5. Description -->
+          <!-- 3. Description -->
           <div class="form-group {% if errors.get('description') %}has-error{% endif %}">
             <label for="description" class="form-label">Description</label>
             <textarea id="description" name="description" class="form-textarea" rows="3"
@@ -116,6 +95,14 @@
                 </svg>
                 Reported
               </span>
+              {% else %}
+              <span class="badge-status status-fixed">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Fixed
+              </span>
               {% endif %}
 
               <!-- Three-dot menu (only for report owner) -->
@@ -164,7 +151,7 @@
 
           <!-- Reporter info -->
           <div class="report-author">
-            Reported by {{ report.name }}
+            Reported by: {{ report.user.full_name if (report.user and report.user.full_name) else report.name }}
           </div>
 
           <!-- Description -->
@@ -172,39 +159,53 @@
             {{ report.description }}
           </p>
 
-          <!-- Category badge at bottom & Mark as Fixed / Fixed badge -->
+          <!-- Category badge at bottom, Date & Mark as Fixed / Fixed badge -->
           <div class="report-card-bottom">
-            {% if report.category == 'energy' %}
-            <span class="badge-category category-energy">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" aria-hidden="true">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-              </svg>
-              Energy
-            </span>
-            {% elif report.category == 'water' %}
-            <span class="badge-category category-water">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" aria-hidden="true">
-                <path
-                  d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z">
-                </path>
-              </svg>
-              Water
-            </span>
-            {% elif report.category == 'waste' %}
-            <span class="badge-category category-waste">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 6h18"></path>
-                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-              </svg>
-              Waste
-            </span>
-            {% endif %}
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              {% if report.category == 'energy' %}
+              <span class="badge-category category-energy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                Energy
+              </span>
+              {% elif report.category == 'water' %}
+              <span class="badge-category category-water">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z">
+                  </path>
+                </svg>
+                Water
+              </span>
+              {% elif report.category == 'waste' %}
+              <span class="badge-category category-waste">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                Waste
+              </span>
+              {% endif %}
+
+              {% if report.date_created %}
+              <span class="report-date" style="font-size: 0.82rem; color: #4a6759; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {{ report.date_created.strftime('%b %d, %Y') }}
+              </span>
+              {% endif %}
+            </div>
 
             <!-- Ownership: Mark as Fixed button or Fixed status badge -->
             {% if report.status == 'fixed' %}

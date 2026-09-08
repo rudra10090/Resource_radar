@@ -16,41 +16,7 @@
         </div>
 
         <form action="{{ url_for('edit_report', id=report.id) }}" method="POST" class="report-form" novalidate id="edit-report-form">
-          <!-- 1. Your Name -->
-          <div class="form-group {% if errors.get('name') %}has-error{% endif %}">
-            <label for="name" class="form-label">Your name</label>
-            <input 
-              type="text" 
-              id="name" 
-              name="name" 
-              class="form-input" 
-              placeholder="e.g. Alex Johnson"
-              value="{{ form_data.get('name', '') }}"
-              required
-            >
-            {% if errors.get('name') %}
-              <p class="form-error" id="error-name">{{ errors.get('name') }}</p>
-            {% endif %}
-          </div>
-
-          <!-- 2. Institute Name -->
-          <div class="form-group {% if errors.get('institute_name') %}has-error{% endif %}">
-            <label for="institute_name" class="form-label">Institute name</label>
-            <input 
-              type="text" 
-              id="institute_name" 
-              name="institute_name" 
-              class="form-input" 
-              placeholder="eg: Lovely Professional University"
-              value="{{ form_data.get('institute_name', '') }}"
-              required
-            >
-            {% if errors.get('institute_name') %}
-              <p class="form-error" id="error-institute">{{ errors.get('institute_name') }}</p>
-            {% endif %}
-          </div>
-
-          <!-- 3. Location -->
+          <!-- 1. Location -->
           <div class="form-group {% if errors.get('location') %}has-error{% endif %}">
             <label for="location" class="form-label">Location</label>
             <input 
