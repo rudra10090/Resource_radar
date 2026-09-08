@@ -16,6 +16,7 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.ico') }}">
   {% block head_extra %}{% endblock %}
 </head>
 
@@ -68,11 +69,11 @@
       <!-- Desktop Auth State -->
       <div class="nav-auth-desktop" id="nav-auth-desktop">
         {% if session.get('user_id') %}
-          <span class="nav-user-name" id="nav-user-name">{{ session.get('full_name') }}</span>
-          <a href="{{ url_for('logout') }}" class="btn-logout-nav" id="btn-logout">Logout</a>
+        <span class="nav-user-name" id="nav-user-name">{{ session.get('full_name') }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-logout-nav" id="btn-logout">Logout</a>
         {% else %}
-          <a href="{{ url_for('login') }}" class="nav-link nav-auth-link {% if active_page == 'login' %}active{% endif %}"
-            id="nav-login">Login / Sign Up</a>
+        <a href="{{ url_for('login') }}" class="nav-link nav-auth-link {% if active_page == 'login' %}active{% endif %}"
+          id="nav-login">Login / Sign Up</a>
         {% endif %}
       </div>
 
