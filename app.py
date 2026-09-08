@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timezone
-from flask import Flask, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -42,6 +42,8 @@ class Report(db.Model):
         db.DateTime, default=lambda: datetime.now(timezone.utc)
     )
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+
+    user = db.relationship("User", foreign_keys=[user_id], backref=db.backref("reports", lazy=True))
 
     def __repr__(self):
         return f"<Report {self.id} - {self.institute_name} ({self.category})>"
@@ -229,32 +231,28 @@ def about():
 
 @app.route("/report", methods=["GET", "POST"])
 def report():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user = db.session.get(User, session.get("user_id"))
+    if not user:
+        session.clear()
+        flash("Please log in to submit a report.")
+        return redirect(url_for("login"))
+
     errors = {}
     form_data = {
-        "name": session.get("full_name", ""),
-        "institute_name": session.get("institute_name", ""),
         "location": "",
         "category": "",
         "description": "",
     }
 
     if request.method == "POST":
-        if session.get("user_id"):
-            form_data["name"] = session.get("full_name", "")
-            form_data["institute_name"] = session.get("institute_name", "")
-        else:
-            form_data["name"] = request.form.get("name", "").strip()
-            form_data["institute_name"] = request.form.get("institute_name", "").strip()
-
         form_data["location"] = request.form.get("location", "").strip()
         form_data["category"] = request.form.get("category", "").strip().lower()
         form_data["description"] = request.form.get("description", "").strip()
 
         # Server-side validation
-        if not form_data["name"]:
-            errors["name"] = "Please enter your name."
-        if not form_data["institute_name"]:
-            errors["institute_name"] = "Please enter your institute name."
         if not form_data["location"]:
             errors["location"] = "Please specify the location."
         if not form_data["category"] or form_data["category"] not in ["energy", "water", "waste"]:
@@ -263,15 +261,14 @@ def report():
             errors["description"] = "Please provide a description of the issue."
 
         if not errors:
-            user_id = session.get("user_id")
             new_report = Report(
-                name=form_data["name"],
-                institute_name=form_data["institute_name"],
+                name=user.full_name or session.get("full_name", ""),
+                institute_name=user.institute_name or session.get("institute_name", ""),
                 location=form_data["location"],
                 category=form_data["category"],
                 description=form_data["description"],
                 status="reported",
-                user_id=user_id,
+                user_id=user.id,
             )
             db.session.add(new_report)
             db.session.commit()
@@ -289,31 +286,26 @@ def report():
 
 @app.route("/report/edit/<int:id>", methods=["GET", "POST"])
 def edit_report(id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     report_item = db.session.get(Report, id)
-    if not report_item or not session.get("user_id") or report_item.user_id != session.get("user_id"):
+    if not report_item or report_item.user_id != session.get("user_id"):
         return redirect(url_for("report"))
 
     errors = {}
     if request.method == "POST":
-        name = request.form.get("name", "").strip()
-        institute_name = request.form.get("institute_name", "").strip()
         location = request.form.get("location", "").strip()
         category = request.form.get("category", "").strip().lower()
         description = request.form.get("description", "").strip()
 
         form_data = {
-            "name": name,
-            "institute_name": institute_name,
             "location": location,
             "category": category,
             "description": description,
         }
 
         # Server-side validation
-        if not name:
-            errors["name"] = "Please enter your name."
-        if not institute_name:
-            errors["institute_name"] = "Please enter your institute name."
         if not location:
             errors["location"] = "Please specify the location."
         if not category or category not in ["energy", "water", "waste"]:
@@ -322,8 +314,6 @@ def edit_report(id):
             errors["description"] = "Please provide a description of the issue."
 
         if not errors:
-            report_item.name = name
-            report_item.institute_name = institute_name
             report_item.location = location
             report_item.category = category
             report_item.description = description
@@ -331,8 +321,6 @@ def edit_report(id):
             return redirect(url_for("report"))
     else:
         form_data = {
-            "name": report_item.name,
-            "institute_name": report_item.institute_name,
             "location": report_item.location,
             "category": report_item.category,
             "description": report_item.description,
@@ -349,8 +337,11 @@ def edit_report(id):
 
 @app.route("/report/delete/<int:id>", methods=["GET", "POST"])
 def delete_report(id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     report_item = db.session.get(Report, id)
-    if report_item and session.get("user_id") and report_item.user_id == session.get("user_id"):
+    if report_item and report_item.user_id == session.get("user_id"):
         db.session.delete(report_item)
         db.session.commit()
     return redirect(url_for("report"))
@@ -358,8 +349,11 @@ def delete_report(id):
 
 @app.route("/report/fixed/<int:id>", methods=["GET", "POST"])
 def report_fixed(id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     report_item = db.session.get(Report, id)
-    if report_item and session.get("user_id") and report_item.user_id == session.get("user_id"):
+    if report_item and report_item.user_id == session.get("user_id"):
         report_item.status = "fixed"
         db.session.commit()
     return redirect(url_for("report"))
@@ -571,6 +565,5 @@ def logout():
     return redirect(url_for("login"))
 
 
-import os
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=True, host="127.0.0.1", port=5000)
