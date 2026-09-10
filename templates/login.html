@@ -18,18 +18,31 @@
         <span class="auth-brand-name">ResourceRadar</span>
       </div>
 
+      <!-- Flash Messages -->
+      {% set flash_msgs = get_flashed_messages() %}
+      {% if flash_msgs %}
+        <div class="auth-flash-messages" id="auth-flash-messages" style="margin-bottom: 20px;">
+          {% for message in flash_msgs %}
+            <div class="auth-flash-alert" id="auth-flash-alert" style="background-color: #eaf3de; border: 1px solid rgba(15, 110, 86, 0.25); color: #0f6e56; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; font-weight: 500; text-align: center;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% set current_tab = 'login' if (flash_msgs and not request.args.get('tab')) else active_tab %}
+
       <!-- Tab Toggle: Two pill-shaped tabs -->
       <div class="auth-tabs" role="tablist" aria-label="Authentication tabs">
-        <button type="button" class="auth-tab {% if active_tab == 'signup' %}active{% endif %}" id="tab-btn-signup" role="tab" aria-selected="{% if active_tab == 'signup' %}true{% else %}false{% endif %}" aria-controls="auth-pane-signup" data-tab="signup">
+        <button type="button" class="auth-tab {% if current_tab == 'signup' %}active{% endif %}" id="tab-btn-signup" role="tab" aria-selected="{% if current_tab == 'signup' %}true{% else %}false{% endif %}" aria-controls="auth-pane-signup" data-tab="signup">
           Sign Up
         </button>
-        <button type="button" class="auth-tab {% if active_tab == 'login' %}active{% endif %}" id="tab-btn-login" role="tab" aria-selected="{% if active_tab == 'login' %}true{% else %}false{% endif %}" aria-controls="auth-pane-login" data-tab="login">
+        <button type="button" class="auth-tab {% if current_tab == 'login' %}active{% endif %}" id="tab-btn-login" role="tab" aria-selected="{% if current_tab == 'login' %}true{% else %}false{% endif %}" aria-controls="auth-pane-login" data-tab="login">
           Log In
         </button>
       </div>
 
       <!-- Sign Up Form -->
-      <form action="{{ url_for('login') }}" method="POST" class="auth-form" id="auth-pane-signup" role="tabpanel" aria-labelledby="tab-btn-signup" novalidate {% if active_tab != 'signup' %}style="display: none;"{% endif %}>
+      <form action="{{ url_for('login') }}" method="POST" class="auth-form" id="auth-pane-signup" role="tabpanel" aria-labelledby="tab-btn-signup" novalidate {% if current_tab != 'signup' %}style="display: none;"{% endif %}>
         <input type="hidden" name="action" value="signup">
 
         <!-- 1. Full Name -->
@@ -82,7 +95,7 @@
       </form>
 
       <!-- Log In Form -->
-      <form action="{{ url_for('login') }}" method="POST" class="auth-form" id="auth-pane-login" role="tabpanel" aria-labelledby="tab-btn-login" novalidate {% if active_tab != 'login' %}style="display: none;"{% endif %}>
+      <form action="{{ url_for('login') }}" method="POST" class="auth-form" id="auth-pane-login" role="tabpanel" aria-labelledby="tab-btn-login" novalidate {% if current_tab != 'login' %}style="display: none;"{% endif %}>
         <input type="hidden" name="action" value="login">
 
         <!-- 1. Username -->
