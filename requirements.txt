@@ -23,7 +23,6 @@ pandas==3.0.5
 pillow==12.3.0
 pycparser==3.0
 pyparsing==3.3.2
-pypiwin32==223
 python-dateutil==2.9.0.post0
 pyttsx3==2.90
 requests==2.34.2
