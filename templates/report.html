@@ -71,16 +71,110 @@
     <!-- Section 2: Recent Reports List -->
     <section class="reports-section scroll-fade" id="reports-list-section" aria-label="Recent reports list">
       <div class="reports-section-header">
-        <h2 class="reports-section-title">Recent reports</h2>
-        <p class="reports-section-subtitle">
-          Browse live inefficiencies submitted across campuses, hostels, and workplaces.
-        </p>
+        <div class="reports-header-row">
+          <div class="reports-header-text">
+            <h2 class="reports-section-title">Recent reports</h2>
+            <p class="reports-section-subtitle">
+              Browse live inefficiencies submitted across campuses, hostels, and workplaces.
+            </p>
+          </div>
+
+          <!-- Filter Button & Dropdown Container -->
+          <div class="reports-filter-wrapper" id="reports-filter-wrapper">
+            <button type="button" class="btn-filter-toggle" id="filter-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="institute-filter-dropdown" title="Filter reports by institute">
+              <svg class="filter-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <span class="filter-btn-label">Filter</span>
+              <span class="filter-active-pill" id="filter-active-pill" style="display: none;">1</span>
+              <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <!-- Dropdown Popover Menu -->
+            <div class="institute-filter-dropdown" id="institute-filter-dropdown" role="region" aria-label="Filter reports by institute">
+              <div class="filter-dropdown-header">
+                <span class="filter-dropdown-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                  </svg>
+                  Filter by Institute
+                </span>
+                <button type="button" class="btn-filter-close" id="filter-close-btn" aria-label="Close filter">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Search box for institutes -->
+              <div class="filter-search-box">
+                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="institute-search-input" class="filter-search-input" placeholder="Search institutes..." autocomplete="off" aria-label="Search institutes">
+              </div>
+
+              <!-- Institutes Options List -->
+              <div class="filter-options-list" id="filter-options-list" role="listbox" aria-label="Institutes">
+                <!-- Show All / Reset option -->
+                <button type="button" class="filter-option-item is-active" data-value="ALL" role="option" aria-selected="true" id="opt-all">
+                  <span class="option-radio-dot" aria-hidden="true"></span>
+                  <span class="option-name">All Institutes</span>
+                  <span class="option-count" id="count-all">{{ reports|length if reports else 0 }}</span>
+                </button>
+                {% if institute_counts %}
+                {% for inst, count in institute_counts.items() %}
+                <button type="button" class="filter-option-item" data-value="{{ inst }}" role="option" aria-selected="false" title="{{ inst }}">
+                  <span class="option-radio-dot" aria-hidden="true"></span>
+                  <span class="option-name">{{ inst }}</span>
+                  <span class="option-count">{{ count }}</span>
+                </button>
+                {% endfor %}
+                {% else %}
+                <div class="filter-no-results" id="filter-no-institutes-msg">
+                  No institutes with reports yet
+                </div>
+                {% endif %}
+                <div class="filter-no-results" id="filter-search-no-results" style="display: none;">
+                  No matching institutes found
+                </div>
+              </div>
+
+              <div class="filter-dropdown-footer">
+                <button type="button" class="btn-clear-filter" id="btn-reset-filter">
+                  Clear Filter
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Filter Indicator Bar -->
+        <div class="active-filter-bar" id="active-filter-bar" style="display: none;">
+          <div class="active-filter-badge">
+            <svg class="active-filter-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+            <span>Filtering by: <strong id="active-filter-name">All</strong></span>
+            <span class="active-filter-count" id="active-filter-count">(0 reports)</span>
+            <button type="button" class="btn-remove-filter" id="btn-remove-filter" aria-label="Clear active filter" title="Clear filter">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       {% if reports and reports|length > 0 %}
       <div class="reports-grid" id="reports-container">
         {% for report in reports %}
-        <article class="report-card category-{{ report.category }}" id="report-{{ report.id }}">
+        <article class="report-card category-{{ report.category }}" id="report-{{ report.id }}" data-institute="{{ report.institute_name | e }}">
           <!-- Top Row: Institute & Status Badge + Menu -->
           <div class="report-card-top">
             <span class="report-institute">{{ report.institute_name }}</span>
@@ -228,6 +322,21 @@
           </div>
         </article>
         {% endfor %}
+
+        <!-- Filter Empty State (displayed when selected institute has 0 reports) -->
+        <div class="filter-empty-card" id="filter-empty-state" style="display: none;">
+          <div class="filter-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              <line x1="1" y1="1" x2="23" y2="23" stroke-width="2"></line>
+            </svg>
+          </div>
+          <h3 class="filter-empty-title">No reports match this institute</h3>
+          <p class="filter-empty-subtext">There are currently no inefficiencies listed for the selected institute.</p>
+          <button type="button" class="btn btn-primary btn-reset-empty" id="btn-empty-clear-filter">
+            Show All Reports
+          </button>
+        </div>
       </div>
       {% else %}
       <!-- Empty State -->
